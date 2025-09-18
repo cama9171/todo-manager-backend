@@ -2,9 +2,11 @@ package com.dev.task_manager_backend.controller;
 
 import com.dev.task_manager_backend.modal.User;
 import com.dev.task_manager_backend.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,19 +22,24 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/register")
+    public User registerUser(@RequestBody User newUser){
+        return userService.registerUser(newUser);
+    }
+
     @RequestMapping("/")
-    public String healthCheck(){
-        return "API works!";
+    public String healthCheck(HttpServletRequest request){
+        return "API works! + " + request.getSession().getId();
+    }
+
+    @GetMapping("/csrf-token")
+    public CsrfToken getCsrfToken(HttpServletRequest request){
+        return (CsrfToken) request.getAttribute("_csrf");
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers(){
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-    }
-
-    @PostMapping("/users")
-    public void addUser(@RequestBody User newUser){
-        userService.addUser(newUser);
     }
 
     @GetMapping("/users/{id}")

@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
-@RequiredArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name="users")
 public class User {
@@ -15,7 +12,30 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NonNull private String userName;
+    @NonNull private String username;
     @NonNull private String password;
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
