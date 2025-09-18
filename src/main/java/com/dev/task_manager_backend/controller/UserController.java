@@ -27,6 +27,11 @@ public class UserController {
         return userService.registerUser(newUser);
     }
 
+    @PostMapping("/login")
+    public String loginUser(@RequestBody User user){
+        return userService.verifyUser(user);
+    }
+
     @RequestMapping("/")
     public String healthCheck(HttpServletRequest request){
         return "API works! + " + request.getSession().getId();
