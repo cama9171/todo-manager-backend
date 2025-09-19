@@ -48,8 +48,9 @@ public class UserService {
         Authentication authenticate = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
         if(authenticate.isAuthenticated()){
-            return jwtService.generateToken(user.getUsername());
+            String token = jwtService.generateToken(user.getUsername());
+            return "{ \"token\": \"" + token + "\" }";
         }
-        return "Fail";
+        return "{ \"token\": \"Fail\" }";
     }
 }
