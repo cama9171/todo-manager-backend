@@ -5,6 +5,8 @@ import com.dev.task_manager_backend.modal.Task;
 import com.dev.task_manager_backend.modal.User;
 import com.dev.task_manager_backend.service.TaskService;
 import com.dev.task_manager_backend.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Task", description = "The User API. Contains all the operations that can be performed on a task.")
 public class TaskController {
 
-    private TaskService taskService;
-    private UserService userService;
+    private final TaskService taskService;
+    private final UserService userService;
 
     @Autowired
     public TaskController(TaskService taskService, UserService userService) {
@@ -37,34 +41,12 @@ public class TaskController {
 
     @PostMapping("/tasks")
     public ResponseEntity<Task> addTask(@RequestBody TaskDTO taskDTO){
-        long userId1 = taskDTO.getUserId();
-
-        User user1 = userService.getUserById(userId1);
-
-        Task task1 = new Task();
-        task1.setTitle(taskDTO.getTitle());
-        task1.setStatus(taskDTO.isStatus());
-        task1.setUser(user1);
-
-        return new ResponseEntity<>(taskService.addTask(task1), HttpStatus.OK);
+        return new ResponseEntity<>(taskService.addTask(taskDTO), HttpStatus.OK);
     }
 
     @PutMapping("/tasks/{id}")
-    public ResponseEntity<String> updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO){
-        Task task1 = taskService.getTask(id);
-
-        if(task1 != null){
-            User user1 = userService.getUserById(taskDTO.getUserId());
-
-            task1.setTitle(taskDTO.getTitle());
-            task1.setStatus(taskDTO.isStatus());
-            task1.setUser(user1);
-
-            taskService.updateTask(id, task1);
-            return new ResponseEntity<>("Task updated", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Failed to update", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Task> updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO){
+        return new ResponseEntity<>(taskService.updateTask(id, taskDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/tasks/{id}")

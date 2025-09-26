@@ -36,11 +36,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests(req -> req.requestMatchers(
+                "/v3/api-docs/**",
+                "/v3/api-docs.yaml",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/swagger-resources/**",
+                "/webjars/**"
+                ).permitAll()
+                .anyRequest().authenticated()
+        );
         httpSecurity.csrf(cust -> cust.disable());
-        httpSecurity.authorizeHttpRequests(req -> req
-                .requestMatchers("api/register", "api/login")
-                .permitAll()
-                .anyRequest().authenticated());
         httpSecurity.formLogin(Customizer.withDefaults());
         httpSecurity.httpBasic(Customizer.withDefaults());
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
